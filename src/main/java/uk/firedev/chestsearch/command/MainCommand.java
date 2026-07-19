@@ -52,7 +52,7 @@ public class MainCommand {
             .executes(ctx -> {
                 Player player = CommandUtil.requirePlayer(ctx);
                 ItemStack handItem = player.getInventory().getItemInMainHand();
-                List<Container> found = new Searcher(player, MainConfig.getInstance().getSearchRange()).search(handItem);
+                List<Container> found = new Searcher(player).search(handItem);
                 execute(player, found, handItem.displayName());
                 return 1;
             });
@@ -65,7 +65,7 @@ public class MainCommand {
                     .executes(ctx -> {
                         Player player = CommandUtil.requirePlayer(ctx);
                         ItemType type = ctx.getArgument("type", ItemType.class);
-                        List<Container> found = new Searcher(player, MainConfig.getInstance().getSearchRange()).search(type);
+                        List<Container> found = new Searcher(player).search(type);
                         execute(
                             player,
                             found,
@@ -83,7 +83,7 @@ public class MainCommand {
                     .executes(ctx -> {
                         Player player = CommandUtil.requirePlayer(ctx);
                         String name = ctx.getArgument("name", String.class);
-                        List<Container> found = new Searcher(player, MainConfig.getInstance().getSearchRange()).search(name);
+                        List<Container> found = new Searcher(player).search(name);
                         execute(player, found, Component.text(name));
                         return 1;
                     })

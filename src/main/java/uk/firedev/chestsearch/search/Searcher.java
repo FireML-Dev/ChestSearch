@@ -15,11 +15,9 @@ import java.util.function.Predicate;
 public class Searcher {
 
     private final Player player;
-    private final int yRange;
 
-    public Searcher(@NotNull Player player, int yRange) {
+    public Searcher(@NotNull Player player) {
         this.player = player;
-        this.yRange = yRange;
     }
 
     @SuppressWarnings({"UnstableApiUsage", "deprecation"})
@@ -65,7 +63,7 @@ public class Searcher {
     }
 
     private @NotNull List<Container> search(@NotNull Predicate<Container> predicate) {
-        return SearchUtil.fetchAllContainersInRadius(player.getLocation().getBlock(), yRange, predicate);
+        return SearchUtil.fetchAllContainersInRadius(player.getLocation().getBlock(), predicate);
     }
 
 }

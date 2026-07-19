@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.jetbrains.annotations.NotNull;
+import uk.firedev.chestsearch.config.MainConfig;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,9 +17,10 @@ public class SearchUtil {
 
     private static final ParticleBuilder particles = new ParticleBuilder(Particle.DUST).color(Color.WHITE).count(5);
 
-    public static List<Container> fetchAllContainersInRadius(@NotNull Block center, int yRange, @NotNull Predicate<Container> predicate) {
-        int minY = center.getY() - yRange;
-        int maxY = center.getY() + yRange;
+    public static List<Container> fetchAllContainersInRadius(@NotNull Block center, @NotNull Predicate<Container> predicate) {
+        int range = MainConfig.getInstance().getSearchRange();
+        int minY = center.getY() - range;
+        int maxY = center.getY() + range;
         Predicate<Block> preFilter = block -> block.getY() >= minY && block.getY() <= maxY;
 
         return center.getChunk().getTileEntities(preFilter, false).stream()

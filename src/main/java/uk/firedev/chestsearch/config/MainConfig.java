@@ -14,12 +14,11 @@ public class MainConfig {
         return INSTANCE;
     }
 
+    /**
+     * The y level range to search in. 0 or below means it is disabled.
+     */
     public int getSearchRange() {
-        return 5; // TODO make this configurable.
-    }
-
-    public int getGlowDuration() {
-        return 5; // TODO make this configurable.
+        return Math.max(1, 5); // TODO make this configurable.
     }
 
 }
