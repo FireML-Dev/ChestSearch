@@ -3,7 +3,6 @@ package uk.firedev.chestsearch.search;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,17 +10,16 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class Searcher {
 
     private final Player player;
-    private final int range;
+    private final int yRange;
 
-    public Searcher(@NotNull Player player, int range) {
+    public Searcher(@NotNull Player player, int yRange) {
         this.player = player;
-        this.range = range;
+        this.yRange = yRange;
     }
 
     @SuppressWarnings({"UnstableApiUsage", "deprecation"})
@@ -67,11 +65,7 @@ public class Searcher {
     }
 
     private @NotNull List<Container> search(@NotNull Predicate<Container> predicate) {
-        return SearchUtil.fetchAllBlocksInRadius(player.getLocation().getBlock(), range).stream()
-            .map(block -> (block.getState(false) instanceof Container container) ? container : null)
-            .filter(Objects::nonNull)
-            .filter(predicate)
-            .toList();
+        return SearchUtil.fetchAllContainersInRadius(player.getLocation().getBlock(), yRange, predicate);
     }
 
 }

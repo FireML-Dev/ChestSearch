@@ -4,36 +4,28 @@ import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 public class SearchUtil {
 
     private static final ParticleBuilder particles = new ParticleBuilder(Particle.DUST).color(Color.WHITE).count(5);
 
-    public static List<Block> fetchAllBlocksInRadius(@NotNull Block center, int range) {
-        World world = center.getWorld();
-        int minX = center.getX() - range;
-        int maxX = center.getX() + range;
-        int minY = center.getY() - range;
-        int maxY = center.getY() + range;
-        int minZ = center.getZ() - range;
-        int maxZ = center.getZ() + range;
+    public static List<Container> fetchAllContainersInRadius(@NotNull Block center, int yRange, @NotNull Predicate<Container> predicate) {
+        int minY = center.getY() - yRange;
+        int maxY = center.getY() + yRange;
+        Predicate<Block> preFilter = block -> block.getY() >= minY && block.getY() <= maxY;
 
-        List<Block> blocks = new ArrayList<>();
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    blocks.add(world.getBlockAt(x, y, z));
-                }
-            }
-        }
-        return blocks;
+        return center.getChunk().getTileEntities(preFilter, false).stream()
+            .map(state -> (state instanceof Container c) ? c : null)
+            .filter(Objects::nonNull)
+            .filter(predicate)
+            .toList();
     }
 
     public static void glow(@NotNull Container container) {
