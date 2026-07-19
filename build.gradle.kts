@@ -16,31 +16,24 @@ repositories {
 
 dependencies {
     compileOnly(libs.paper.api)
-    compileOnly(libs.daisylib)
+    implementation(libs.messagelib)
 }
 
 group = "uk.firedev"
 version = properties["project-version"] as String
-description = "Template Plugin"
-java.sourceCompatibility = JavaVersion.VERSION_25
+description = "A Paper plugin that allows players to find items in nearby chests."
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 paper {
     name = project.name
     version = project.version.toString()
-    main = "uk.firedev.plugintemplate.PluginTemplate"
-    apiVersion = "26.1"
+    main = "uk.firedev.chestsearch.ChestSearch"
+    apiVersion = "1.21"
     author = "FireML"
     description = project.description.toString()
 
-    loader = "uk.firedev.plugintemplate.LibraryLoader"
+    loader = "uk.firedev.chestsearch.LibraryLoader"
     generateLibrariesJson = true
-
-    serverDependencies {
-        register("DaisyLib") {
-            required = true
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
-        }
-    }
 }
 
 publishing {
@@ -82,7 +75,6 @@ tasks {
     withType<JavaCompile> {
         options.encoding = "UTF-8"
     }
-    // Use the Google Maven Central proxy to stop Paper from complaining.
     generatePaperPluginDescription {
         useGoogleMavenCentralProxy()
     }

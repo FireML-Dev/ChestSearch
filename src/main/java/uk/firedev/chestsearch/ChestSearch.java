@@ -1,29 +1,32 @@
-package uk.firedev.plugintemplate;
+package uk.firedev.chestsearch;
 
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import uk.firedev.chestsearch.command.MainCommand;
 
-public final class PluginTemplate extends JavaPlugin {
+public final class ChestSearch extends JavaPlugin {
 
-    private static PluginTemplate INSTANCE;
+    private static ChestSearch INSTANCE;
 
-    public PluginTemplate() {
+    public ChestSearch() {
         if (INSTANCE != null) {
             throw new UnsupportedOperationException(getClass().getName() + " has already been assigned!");
         }
         INSTANCE = this;
     }
 
-    public static @NotNull PluginTemplate getInstance() {
+    public static @NotNull ChestSearch getInstance() {
         if (INSTANCE == null) {
-            throw new IllegalStateException(PluginTemplate.class.getSimpleName() + " has not been assigned!");
+            throw new IllegalStateException(ChestSearch.class.getSimpleName() + " has not been assigned!");
         }
         return INSTANCE;
     }
 
     @Override
-    public void onLoad() {}
+    public void onLoad() {
+        registerCommands();
+    }
 
     @Override
     public void onEnable() {}
@@ -31,10 +34,10 @@ public final class PluginTemplate extends JavaPlugin {
     @Override
     public void onDisable() {}
 
+    @SuppressWarnings("UnstableApiUsage")
     private void registerCommands() {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            // Register Brigadier commands here.
-            // commands.registrar().register(new MyCommand().get());
+            commands.registrar().register(MainCommand.get());
         });
     }
 

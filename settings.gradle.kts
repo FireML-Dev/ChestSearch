@@ -1,11 +1,11 @@
-rootProject.name = "PluginTemplate"
+rootProject.name = "ChestSearch"
 
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             // compileOnly dependencies
-            library("paper-api", "io.papermc.paper:paper-api:26.1.2.build.+")
-            library("daisylib", "uk.firedev:DaisyLib:3.1-SNAPSHOT")
+            library("paper-api", "io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
+            library("messagelib", "uk.firedev:MessageLib:1.0.8")
 
             // implementation dependencies
 
