@@ -16,13 +16,13 @@ import uk.firedev.chestsearch.ChestSearch;
 import uk.firedev.chestsearch.config.MainConfig;
 import uk.firedev.chestsearch.search.SearchUtil;
 import uk.firedev.chestsearch.search.Searcher;
-import uk.firedev.messagelib.message.ComponentMessage;
 
 @SuppressWarnings("UnstableApiUsage")
 public class MainCommand {
 
     public static LiteralCommandNode<CommandSourceStack> get() {
         return Commands.literal("chestsearch")
+            .requires(stack -> stack.getSender().hasPermission("chestsearch.command") || stack.getSender().hasPermission("chestsearch.admin"))
             .then(reload())
             .then(hand())
             .then(type())
