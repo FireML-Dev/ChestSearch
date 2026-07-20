@@ -42,6 +42,11 @@ public class MainConfig {
         return Math.max(1, config);
     }
 
+    public int getGlowCount() {
+        int config = getConfig().getInt("search.glow-count", 5);
+        return Math.max(1, config);
+    }
+
     public @NotNull ComponentMessage getReloadedMessage() {
         return getMessage("messages.reloaded");
     }

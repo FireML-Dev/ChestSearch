@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import uk.firedev.chestsearch.ChestSearch;
+import uk.firedev.chestsearch.config.MainConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class ParticleDisplay {
 
     private final UUID uuid;
     // How many times should particles be resent.
-    private int iterations = 5;
+    private int iterations = MainConfig.getInstance().getGlowCount();
 
     public ParticleDisplay(@NotNull Player player) {
         this.uuid = player.getUniqueId();

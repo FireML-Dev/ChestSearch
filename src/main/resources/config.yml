@@ -1,8 +1,12 @@
 # Search settings
 search:
-  # The range to check around the player. Must be 1 or above.
+  # The range (in blocks) to check around the player. Must be 1 or above.
   # WARNING: Setting this value too high can lag or even crash the server.
   range: 5
+
+  # How many times to show the glow after finding a match.
+  # The delay between each glow effect is 10 ticks (0.5 seconds).
+  glow-count: 5
 
 # Messages - These use the MiniMessage format.
 messages:
