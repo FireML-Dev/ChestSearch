@@ -8,10 +8,6 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.translation.GlobalTranslator;
-import org.bukkit.block.Block;
-import org.bukkit.block.Container;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -19,11 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import uk.firedev.chestsearch.config.MainConfig;
 import uk.firedev.chestsearch.search.SearchUtil;
 import uk.firedev.chestsearch.search.Searcher;
+import uk.firedev.messagelib.message.ComponentListMessage;
 import uk.firedev.messagelib.message.ComponentMessage;
-import uk.firedev.messagelib.message.ComponentSingleMessage;
 
 import java.util.List;
-import java.util.Locale;
 
 @SuppressWarnings("UnstableApiUsage")
 public class MainCommand {
@@ -31,6 +26,7 @@ public class MainCommand {
     public static LiteralCommandNode<CommandSourceStack> get() {
         return Commands.literal("chestsearch")
             .then(reload())
+            .then(help())
             .then(hand())
             .then(type())
             .then(name())
@@ -46,6 +42,28 @@ public class MainCommand {
                 return 1;
             });
     }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> help() {
+        return Commands.literal("help")
+            .executes(ctx -> {
+                // Send message.
+                ComponentMessage.componentMessage(List.of(
+                        "» ChestSearch «",
+                        "",
+                        "Search Range: {range}",
+                        "",
+                        "Commands:",
+                        "/chestsearch hand - Searches nearby chests for items that match your held item.",
+                        "/chestsearch name - Searches nearby chests for items that match the chosen name.",
+                        "/chestsearch type - Searches nearby chests for items that match the chosen type."
+                    ))
+                    .replace("{range}", MainConfig.getInstance().getSearchRange())
+                    .send(ctx.getSource().getSender());
+                return 1;
+            });
+    }
+
+    // Search Commands
 
     private static LiteralArgumentBuilder<CommandSourceStack> hand() {
         return Commands.literal("hand")
