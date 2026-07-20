@@ -2,7 +2,7 @@
 
 A Paper plugin that allows players to find items in nearby chests with a single command.
 
-All blocks within range of the player are checked. The range can be configured in config.yml.
+All blocks within range of the player are checked. This range defaults to 5 can be configured in config.yml.
 
 ### Commands
 | Command               | Arguments | Permission            | Description                                                                                                                 |
