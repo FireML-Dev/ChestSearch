@@ -59,7 +59,7 @@ public class SearchUtil {
             location.clone().add(0.5, 0, 0),
             location.clone().add(-0.5, 0, 0),
             location.clone().add(0, 0, 0.5),
-            location.clone().add(0, 0, 0.5)
+            location.clone().add(0, 0, -0.5)
         );
     }
 
