@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import uk.firedev.chestsearch.config.MainConfig;
 
@@ -15,8 +16,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class SearchUtil {
-
-    private static final ParticleBuilder particles = new ParticleBuilder(Particle.DUST).color(Color.WHITE).count(5);
 
     public static List<Container> fetchAllContainersInRadius(@NotNull Block center, @NotNull Predicate<Container> predicate) {
         int range = MainConfig.getInstance().getSearchRange();
@@ -42,12 +41,15 @@ public class SearchUtil {
         return containers;
     }
 
-    public static void glow(@NotNull Container container) {
-        Block block = container.getBlock();
-        new ParticleDisplay(
-            fetchLocations(block.getLocation().toCenterLocation()),
-            particles
-        ).start();
+    public static void glow(@NotNull Player player, @NotNull List<Container> containers) {
+        ParticleDisplay display = new ParticleDisplay(player);
+        // Collects all the locations to display.
+        containers.forEach(container -> {
+            Block block = container.getBlock();
+            Location center = block.getLocation().toCenterLocation();
+            display.addLocations(fetchLocations(center));
+        });
+        display.start();
     }
 
     private static List<Location> fetchLocations(@NotNull Location location) {

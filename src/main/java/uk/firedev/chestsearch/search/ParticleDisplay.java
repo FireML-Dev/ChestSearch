@@ -2,44 +2,76 @@ package uk.firedev.chestsearch.search;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import uk.firedev.chestsearch.ChestSearch;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ParticleDisplay {
 
-    private final List<Location> locations;
+    private static final ParticleBuilder particleBuilder = new ParticleBuilder(Particle.DUST)
+        .color(Color.WHITE)
+        .count(5);
+    private static final Map<UUID, ParticleDisplay> activeDisplays = new ConcurrentHashMap<>();
+
+    public static final BukkitTask TASK = Bukkit.getScheduler().runTaskTimerAsynchronously(
+        ChestSearch.getInstance(),
+        () -> {
+            Iterator<ParticleDisplay> iterator = activeDisplays.values().iterator();
+            while (iterator.hasNext()) {
+                ParticleDisplay display = iterator.next();
+                if (!display.shouldDisplay()) {
+                    iterator.remove();
+                    return;
+                }
+                display.display();
+            }
+        },
+        0,
+        10
+    );
+
+    private final List<Location> locations = new ArrayList<>();
     private final ParticleBuilder particles;
 
-    private BukkitTask task = null;
-
+    private final UUID uuid;
     // How many times should particles be resent.
     private int iterations = 5;
 
-    public ParticleDisplay(@NotNull List<Location> locations, @NotNull ParticleBuilder particles) {
-        this.locations = locations;
-        this.particles = particles.clone();
+    public ParticleDisplay(@NotNull Player player) {
+        this.uuid = player.getUniqueId();
+        this.particles = particleBuilder.clone().receivers(player);
+    }
+
+    public ParticleDisplay addLocations(@NotNull List<Location> locations) {
+        this.locations.addAll(locations);
+        return this;
     }
 
     public void start() {
-        if (task != null || iterations <= 0) {
-            return;
+        activeDisplays.put(uuid, this);
+    }
+
+    public boolean shouldDisplay() {
+        return iterations > 0;
+    }
+
+    public void display() {
+        if (iterations > 0) {
+            this.locations.forEach(loc -> particles.clone().location(loc).spawn());
+            iterations--;
         }
-        task = Bukkit.getScheduler().runTaskTimerAsynchronously(
-            ChestSearch.getInstance(),
-            () -> {
-                if (task != null && iterations <= 0) {
-                    task.cancel();
-                }
-                locations.forEach(loc -> particles.location(loc).spawn());
-                iterations--;
-            },
-            0,
-            10
-        );
     }
 
 }

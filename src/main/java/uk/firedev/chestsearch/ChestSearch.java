@@ -4,6 +4,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import uk.firedev.chestsearch.command.MainCommand;
+import uk.firedev.chestsearch.search.ParticleDisplay;
 
 public final class ChestSearch extends JavaPlugin {
 
@@ -32,7 +33,9 @@ public final class ChestSearch extends JavaPlugin {
     public void onEnable() {}
 
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+        ParticleDisplay.TASK.cancel();
+    }
 
     @SuppressWarnings("UnstableApiUsage")
     private void registerCommands() {

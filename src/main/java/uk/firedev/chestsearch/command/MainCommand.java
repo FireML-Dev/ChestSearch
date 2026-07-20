@@ -101,7 +101,7 @@ public class MainCommand {
             .replace("{amount}", found.size())
             .replace("{searched}", searched)
             .send(player);
-        found.forEach(SearchUtil::glow);
+        SearchUtil.glow(player, found);
     }
 
 }
