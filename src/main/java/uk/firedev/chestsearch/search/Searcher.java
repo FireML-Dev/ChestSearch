@@ -10,8 +10,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class Searcher {
@@ -23,35 +25,44 @@ public class Searcher {
     }
 
     @SuppressWarnings({"UnstableApiUsage", "deprecation"})
-    public @NotNull List<Container> search(@NotNull ItemType type) {
+    public @NotNull SearchResult search(@NotNull ItemType type) {
         Material material = type.asMaterial();
         if (material == null) {
-            return List.of();
+            return new SearchResult(List.of(), false);
         }
-        return search(container -> container.getInventory().contains(material));
+        return new SearchResult(
+            search(container -> container.getInventory().contains(material)),
+            false
+        );
     }
 
-    public @NotNull List<Container> search(@NotNull String name) {
-        return search(container -> {
-            for (ItemStack item : container.getInventory()) {
-                if (item == null || item.isEmpty()) {
-                    continue;
-                }
-                Component display = item.getItemMeta().displayName();
-                if (display == null) {
-                    display = GlobalTranslator.render(Component.translatable(item), Locale.ENGLISH);
-                }
-                String plainName = PlainTextComponentSerializer.plainText().serialize(display);
-                if (name.equalsIgnoreCase(plainName)) {
-                    return true;
-                }
+    public @NotNull SearchResult search(@NotNull String name) {
+        AtomicBoolean partial = new AtomicBoolean(false);
+        List<Container> found = search(container -> {
+            List<String> itemNames = Arrays.stream(container.getInventory().getStorageContents())
+                .filter(item -> item != null && !item.isEmpty())
+                .map(item -> {
+                    Component display = item.getItemMeta().displayName();
+                    if (display == null) {
+                        display = GlobalTranslator.render(Component.translatable(item), Locale.ENGLISH);
+                    }
+                    return PlainTextComponentSerializer.plainText().serialize(display);
+                })
+                .toList();
+            if (itemNames.stream().anyMatch(name::equalsIgnoreCase)) {
+                return true;
+            } else if (itemNames.stream().anyMatch(itemName -> itemName.startsWith(name))) {
+                partial.set(true);
+                return true;
+            } else {
+                return false;
             }
-            return false;
         });
+        return new SearchResult(found, partial.get());
     }
 
-    public @NotNull List<Container> search(@NotNull ItemStack similar) {
-        return search(container -> {
+    public @NotNull SearchResult search(@NotNull ItemStack similar) {
+        List<Container> found = search(container -> {
             for (ItemStack item : container.getInventory()) {
                 if (item == null || item.isEmpty()) {
                     continue;
@@ -62,10 +73,13 @@ public class Searcher {
             }
             return false;
         });
+        return new SearchResult(found, false);
     }
 
     private @NotNull List<Container> search(@NotNull Predicate<Container> predicate) {
         return SearchUtil.fetchAllContainersInRadius(player.getLocation().getBlock(), predicate);
     }
+
+    public record SearchResult(@NotNull List<Container> found, boolean partial) {}
 
 }

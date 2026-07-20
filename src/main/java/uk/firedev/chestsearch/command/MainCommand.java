@@ -52,8 +52,8 @@ public class MainCommand {
             .executes(ctx -> {
                 Player player = CommandUtil.requirePlayer(ctx);
                 ItemStack handItem = player.getInventory().getItemInMainHand();
-                List<Container> found = new Searcher(player).search(handItem);
-                execute(player, found, handItem.displayName());
+                Searcher.SearchResult result = new Searcher(player).search(handItem);
+                execute(player, result, handItem.displayName());
                 return 1;
             });
     }
@@ -65,10 +65,10 @@ public class MainCommand {
                     .executes(ctx -> {
                         Player player = CommandUtil.requirePlayer(ctx);
                         ItemType type = ctx.getArgument("type", ItemType.class);
-                        List<Container> found = new Searcher(player).search(type);
+                        Searcher.SearchResult result = new Searcher(player).search(type);
                         execute(
                             player,
-                            found,
+                            result,
                             Component.translatable(type)
                         );
                         return 1;
@@ -83,25 +83,26 @@ public class MainCommand {
                     .executes(ctx -> {
                         Player player = CommandUtil.requirePlayer(ctx);
                         String name = ctx.getArgument("name", String.class);
-                        List<Container> found = new Searcher(player).search(name);
-                        execute(player, found, Component.text(name));
+                        Searcher.SearchResult result = new Searcher(player).search(name);
+                        execute(player, result, Component.text(name));
                         return 1;
                     })
             );
     }
 
-    private static void execute(@NotNull Player player, @NotNull List<Container> found, @NotNull Component searched) {
-        if (found.isEmpty()) {
+    private static void execute(@NotNull Player player, @NotNull Searcher.SearchResult result, @NotNull Component searched) {
+        if (result.found().isEmpty()) {
             ComponentMessage.componentMessage("Found no matches for {searched}.")
                 .replace("{searched}", searched)
                 .send(player);
             return;
         }
-        ComponentMessage.componentMessage("Found {amount} matches for {searched}. They are now glowing.")
-            .replace("{amount}", found.size())
+        ComponentMessage.componentMessage("Found {amount} {partial}matches for {searched}. They are now glowing.")
+            .replace("{amount}", result.found().size())
             .replace("{searched}", searched)
+            .replace("{partial}", result.partial() ? "partial " : "")
             .send(player);
-        SearchUtil.glow(player, found);
+        SearchUtil.glow(player, result.found());
     }
 
 }
