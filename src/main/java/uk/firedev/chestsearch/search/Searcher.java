@@ -2,6 +2,7 @@ package uk.firedev.chestsearch.search;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.Material;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 
 public class Searcher {
@@ -37,7 +39,7 @@ public class Searcher {
                 }
                 Component display = item.getItemMeta().displayName();
                 if (display == null) {
-                    continue;
+                    display = GlobalTranslator.render(Component.translatable(item), Locale.ENGLISH);
                 }
                 String plainName = PlainTextComponentSerializer.plainText().serialize(display);
                 if (name.equalsIgnoreCase(plainName)) {
