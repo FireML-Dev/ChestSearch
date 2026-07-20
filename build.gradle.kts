@@ -1,5 +1,3 @@
-import net.minecrell.pluginyml.paper.PaperPluginDescription
-
 plugins {
     `java-library`
     `maven-publish`
@@ -16,6 +14,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.paper.api)
+
     implementation(libs.messagelib)
 }
 
@@ -71,6 +70,8 @@ tasks {
         archiveBaseName.set(project.name)
         archiveVersion.set(project.version.toString())
         archiveClassifier.set("")
+
+        relocate("uk.firedev.messagelib", "uk.firedev.chestsearch.libs.messagelib")
     }
     withType<JavaCompile> {
         options.encoding = "UTF-8"

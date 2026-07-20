@@ -12,13 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
+import uk.firedev.chestsearch.ChestSearch;
 import uk.firedev.chestsearch.config.MainConfig;
 import uk.firedev.chestsearch.search.SearchUtil;
 import uk.firedev.chestsearch.search.Searcher;
-import uk.firedev.messagelib.message.ComponentListMessage;
 import uk.firedev.messagelib.message.ComponentMessage;
-
-import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public class MainCommand {
@@ -26,7 +24,6 @@ public class MainCommand {
     public static LiteralCommandNode<CommandSourceStack> get() {
         return Commands.literal("chestsearch")
             .then(reload())
-            .then(help())
             .then(hand())
             .then(type())
             .then(name())
@@ -37,28 +34,8 @@ public class MainCommand {
         return Commands.literal("reload")
             .requires(stack -> stack.getSender().hasPermission("chestsearch.admin"))
             .executes(ctx -> {
-                // TODO reload and message
-                ctx.getSource().getSender().sendPlainMessage("You reloaded ChestSearch.");
-                return 1;
-            });
-    }
-
-    private static LiteralArgumentBuilder<CommandSourceStack> help() {
-        return Commands.literal("help")
-            .executes(ctx -> {
-                // Send message.
-                ComponentMessage.componentMessage(List.of(
-                        "» ChestSearch «",
-                        "",
-                        "Search Range: {range}",
-                        "",
-                        "Commands:",
-                        "/chestsearch hand - Searches nearby chests for items that match your held item.",
-                        "/chestsearch name - Searches nearby chests for items that match the chosen name.",
-                        "/chestsearch type - Searches nearby chests for items that match the chosen type."
-                    ))
-                    .replace("{range}", MainConfig.getInstance().getSearchRange())
-                    .send(ctx.getSource().getSender());
+                ChestSearch.getInstance().reload();
+                MainConfig.getInstance().getReloadedMessage().send(ctx.getSource().getSender());
                 return 1;
             });
     }
@@ -110,16 +87,14 @@ public class MainCommand {
 
     private static void execute(@NotNull Player player, @NotNull Searcher.SearchResult result, @NotNull Component searched) {
         if (result.found().isEmpty()) {
-            ComponentMessage.componentMessage("Found no matches for {searched}.")
-                .replace("{searched}", searched)
-                .send(player);
+            MainConfig.getInstance().getNoMatchesMessage(searched).send(player);
             return;
         }
-        ComponentMessage.componentMessage("Found {amount} {partial}matches for {searched}. They are now glowing.")
-            .replace("{amount}", result.found().size())
-            .replace("{searched}", searched)
-            .replace("{partial}", result.partial() ? "partial " : "")
-            .send(player);
+        MainConfig.getInstance().getFoundMatchesMessage(
+            result.partial(),
+            result.found().size(),
+            searched
+        ).send(player);
         SearchUtil.glow(player, result.found());
     }
 

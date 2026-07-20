@@ -1,0 +1,18 @@
+# Search settings
+search:
+  # The range to check around the player. Must be 1 or above.
+  # WARNING: Setting this value too high can lag or even crash the server.
+  range: 5
+
+# Messages - These use the MiniMessage format.
+messages:
+  # The value of {prefix}.
+  prefix: "<aqua>[ChestSearch]"
+  # Shown when the plugin is reloaded.
+  reloaded: "{prefix} <white>Successfully reloaded the plugin."
+  # Shown when no matches are found.
+  no-matches: "{prefix} <white>Found no matches for {value} within {range} blocks."
+  # Shown when partial matches are found.
+  found-partial-matches: "{prefix} <white>Found {amount} partial matches for {value}. They are now glowing."
+  # Shown when exact matches are found.
+  found-exact-matches: "{prefix} <white>Found {amount} matches for {value}. They are now glowing."
