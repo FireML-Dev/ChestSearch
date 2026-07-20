@@ -3,14 +3,13 @@ package uk.firedev.chestsearch.search;
 import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import uk.firedev.chestsearch.ChestSearch;
 
 import java.util.List;
 
-public class GlowScheduler {
+public class ParticleDisplay {
 
     private final List<Location> locations;
     private final ParticleBuilder particles;
@@ -20,7 +19,7 @@ public class GlowScheduler {
     // How many times should particles be resent.
     private int iterations = 5;
 
-    public GlowScheduler(@NotNull List<Location> locations, @NotNull ParticleBuilder particles) {
+    public ParticleDisplay(@NotNull List<Location> locations, @NotNull ParticleBuilder particles) {
         this.locations = locations;
         this.particles = particles.clone();
     }
