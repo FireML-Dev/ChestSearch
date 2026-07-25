@@ -35,11 +35,12 @@ public final class ChestSearch extends JavaPlugin {
     @Override
     public void onEnable() {
         MessageLibSettings.get().setEnableLegacy(false);
+        ParticleDisplay.startTask(this);
     }
 
     @Override
     public void onDisable() {
-        ParticleDisplay.TASK.cancel();
+        ParticleDisplay.endTask();
     }
 
     public void reload() {

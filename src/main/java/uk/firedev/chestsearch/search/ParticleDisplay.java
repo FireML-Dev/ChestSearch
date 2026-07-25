@@ -8,6 +8,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import uk.firedev.chestsearch.ChestSearch;
 import uk.firedev.chestsearch.config.MainConfig;
 
@@ -24,24 +25,6 @@ public class ParticleDisplay {
     private static final ParticleBuilder particleBuilder = new ParticleBuilder(Particle.DUST)
         .color(Color.WHITE)
         .count(5);
-    private static final Map<UUID, ParticleDisplay> activeDisplays = new ConcurrentHashMap<>();
-
-    public static final BukkitTask TASK = Bukkit.getScheduler().runTaskTimerAsynchronously(
-        ChestSearch.getInstance(),
-        () -> {
-            Iterator<ParticleDisplay> iterator = activeDisplays.values().iterator();
-            while (iterator.hasNext()) {
-                ParticleDisplay display = iterator.next();
-                if (!display.shouldDisplay()) {
-                    iterator.remove();
-                    return;
-                }
-                display.display();
-            }
-        },
-        0,
-        10
-    );
 
     private final List<Location> locations = new ArrayList<>();
     private final ParticleBuilder particles;
@@ -73,6 +56,37 @@ public class ParticleDisplay {
             this.locations.forEach(loc -> particles.clone().location(loc).spawn());
             iterations--;
         }
+    }
+
+    // Scheduling
+
+    private static final Map<UUID, ParticleDisplay> activeDisplays = new ConcurrentHashMap<>();
+    private static @Nullable BukkitTask TASK = null;
+
+    public static void startTask(@NotNull ChestSearch plugin) {
+        TASK = Bukkit.getScheduler().runTaskTimerAsynchronously(
+            plugin,
+            () -> {
+                Iterator<ParticleDisplay> iterator = activeDisplays.values().iterator();
+                while (iterator.hasNext()) {
+                    ParticleDisplay display = iterator.next();
+                    if (!display.shouldDisplay()) {
+                        iterator.remove();
+                        return;
+                    }
+                    display.display();
+                }
+            },
+            0,
+            10
+        );
+    }
+
+    public static void endTask() {
+        if (TASK == null || TASK.isCancelled()) {
+            return;
+        }
+        TASK.cancel();
     }
 
 }
