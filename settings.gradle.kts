@@ -8,6 +8,7 @@ dependencyResolutionManagement {
 
             // implementation dependencies
             library("messagelib", "uk.firedev:MessageLib:1.0.8")
+            library("bstats", "org.bstats:bstats-bukkit:3.2.1")
 
             // paperLibrary dependencies
 

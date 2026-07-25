@@ -1,6 +1,7 @@
 package uk.firedev.chestsearch;
 
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import uk.firedev.chestsearch.command.MainCommand;
@@ -11,6 +12,8 @@ import uk.firedev.messagelib.MessageLibSettings;
 public final class ChestSearch extends JavaPlugin {
 
     private static ChestSearch INSTANCE;
+
+    private final Metrics metrics = new Metrics(this, 32910);
 
     public ChestSearch() {
         if (INSTANCE != null) {

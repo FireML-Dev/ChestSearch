@@ -16,6 +16,7 @@ dependencies {
     compileOnly(libs.paper.api)
 
     implementation(libs.messagelib)
+    implementation(libs.bstats)
 }
 
 group = "uk.firedev"
@@ -72,6 +73,7 @@ tasks {
         archiveClassifier.set("")
 
         relocate("uk.firedev.messagelib", "uk.firedev.chestsearch.libs.messagelib")
+        relocate("org.bstats", "uk.firedev.chestsearch.libs.bstats")
     }
     withType<JavaCompile> {
         options.encoding = "UTF-8"
